@@ -4,7 +4,7 @@ import pygame
 
 
 # Constants for leaderboard
-LEADERBOARD_FILE = 'leaderboard.json'
+LEADERBOARD_FILE = 'leaderboard/leaderboard.json'
 MAX_LEADERBOARD_SIZE = 5
 
 # Leaderboard loading and saving

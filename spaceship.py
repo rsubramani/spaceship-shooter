@@ -3,7 +3,7 @@ import random
 import os
 import math
 import sys
-from leaderboard import load_leaderboard, save_leaderboard, update_leaderboard, draw_leaderboard, get_player_name, MAX_LEADERBOARD_SIZE
+from leaderboard.leaderboard import load_leaderboard, save_leaderboard, update_leaderboard, draw_leaderboard, get_player_name, MAX_LEADERBOARD_SIZE
 
 # Initialize Pygame
 pygame.init()
@@ -23,25 +23,25 @@ YELLOW = (255, 255, 0)
 CYAN = (0, 255, 255)
 
 # Load the space-themed font
-title_font_path = 'fonts/Orbitron/static/Orbitron-Bold.ttf'  # Adjust the path as needed
-menu_font_path = 'fonts/Orbitron/static/Orbitron-Regular.ttf'   # Can be the same or different
+title_font_path = 'assets/fonts/Orbitron/static/Orbitron-Bold.ttf'  # Adjust the path as needed
+menu_font_path = 'assets/fonts/Orbitron/static/Orbitron-Regular.ttf'   # Can be the same or different
 
 # Set up fonts
 font = pygame.font.Font(menu_font_path, 36)
 hud_font = pygame.font.Font(menu_font_path, 28)
 big_font = pygame.font.Font(menu_font_path, 72)
 
-navigate_sound = pygame.mixer.Sound('sounds/click.wav')
-select_sound = pygame.mixer.Sound('sounds/select.wav')
+navigate_sound = pygame.mixer.Sound('assets/sounds/click.wav')
+select_sound = pygame.mixer.Sound('assets/sounds/select.wav')
 
 # Load images (ensure correct path)
-spaceship_image = pygame.image.load("images/spaceship.png")
-bullet_image = pygame.image.load("images/bullet.png")
-enemy_image = pygame.image.load("images/alien.png")
-explosion_image = pygame.image.load("images/explosion.png")
-rapid_fire_image = pygame.image.load("images/rapid_fire.png")
-shield_image = pygame.image.load("images/shield.png")
-bomb_image = pygame.image.load("images/bomb.png")
+spaceship_image = pygame.image.load("assets/images/spaceship.png")
+bullet_image = pygame.image.load("assets/images/bullet.png")
+enemy_image = pygame.image.load("assets/images/alien.png")
+explosion_image = pygame.image.load("assets/images/explosion.png")
+rapid_fire_image = pygame.image.load("assets/images/rapid_fire.png")
+shield_image = pygame.image.load("assets/images/shield.png")
+bomb_image = pygame.image.load("assets/images/bomb.png")
 
 # Resize images
 spaceship_image = pygame.transform.scale(spaceship_image, (50, 50))
