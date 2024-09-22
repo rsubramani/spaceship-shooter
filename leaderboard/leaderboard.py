@@ -4,22 +4,25 @@ import pygame
 
 
 # Constants for leaderboard
-LEADERBOARD_FILE = 'leaderboard/leaderboard.json'
+LEADERBOARD_FILE = "leaderboard/leaderboard.json"
 MAX_LEADERBOARD_SIZE = 5
+
 
 # Leaderboard loading and saving
 def load_leaderboard():
     """Loads the leaderboard from a JSON file."""
     if os.path.exists(LEADERBOARD_FILE):
-        with open(LEADERBOARD_FILE, 'r') as f:
+        with open(LEADERBOARD_FILE, "r") as f:
             return json.load(f)
     else:
         return []  # Return an empty list if no file exists
 
+
 def save_leaderboard(leaderboard):
     """Saves the leaderboard to a JSON file."""
-    with open(LEADERBOARD_FILE, 'w') as f:
+    with open(LEADERBOARD_FILE, "w") as f:
         json.dump(leaderboard, f, indent=4)
+
 
 def update_leaderboard(name, score):
     """Updates the leaderboard with a new score if it qualifies."""
@@ -29,7 +32,7 @@ def update_leaderboard(name, score):
     leaderboard.append({"name": name, "score": score})
 
     # Sort the leaderboard by score in descending order
-    leaderboard = sorted(leaderboard, key=lambda x: x['score'], reverse=True)
+    leaderboard = sorted(leaderboard, key=lambda x: x["score"], reverse=True)
 
     # Limit the leaderboard to the top MAX_LEADERBOARD_SIZE scores
     leaderboard = leaderboard[:MAX_LEADERBOARD_SIZE]
@@ -48,16 +51,23 @@ def draw_leaderboard(screen, font, player_name=None, player_score=None):
     screen.blit(title_text, (screen.get_width() // 2 - title_text.get_width() // 2, 50))
 
     for i, entry in enumerate(leaderboard):
-        name = entry['name']
-        score = entry['score']
-        
+        name = entry["name"]
+        score = entry["score"]
+
         # Highlight the player's score in yellow
         if name == player_name and score == player_score:
-            leaderboard_text = font.render(f"{i + 1}. {name}: {score}", True, (255, 255, 0))  # Yellow text
+            leaderboard_text = font.render(
+                f"{i + 1}. {name}: {score}", True, (255, 255, 0)
+            )  # Yellow text
         else:
-            leaderboard_text = font.render(f"{i + 1}. {name}: {score}", True, (255, 255, 255))  # White text
-        
-        screen.blit(leaderboard_text, (screen.get_width() // 2 - leaderboard_text.get_width() // 2, 100 + i * 40))
+            leaderboard_text = font.render(
+                f"{i + 1}. {name}: {score}", True, (255, 255, 255)
+            )  # White text
+
+        screen.blit(
+            leaderboard_text,
+            (screen.get_width() // 2 - leaderboard_text.get_width() // 2, 100 + i * 40),
+        )
 
     pygame.display.flip()
 
@@ -70,12 +80,18 @@ def get_player_name(screen, font):
 
     while input_active:
         screen.fill((0, 0, 0))  # Black background
-        prompt_text = font.render("Enter your name:", True, (255, 255, 255))  # White text
-        screen.blit(prompt_text, (screen.get_width() // 2 - prompt_text.get_width() // 2, 100))
+        prompt_text = font.render(
+            "Enter your name:", True, (255, 255, 255)
+        )  # White text
+        screen.blit(
+            prompt_text, (screen.get_width() // 2 - prompt_text.get_width() // 2, 100)
+        )
 
         # Display the player's current name input
         name_text = font.render(name, True, (255, 255, 255))  # White text
-        screen.blit(name_text, (screen.get_width() // 2 - name_text.get_width() // 2, 200))
+        screen.blit(
+            name_text, (screen.get_width() // 2 - name_text.get_width() // 2, 200)
+        )
 
         pygame.display.flip()
 

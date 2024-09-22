@@ -3,7 +3,14 @@ import random
 import os
 import math
 import sys
-from leaderboard.leaderboard import load_leaderboard, save_leaderboard, update_leaderboard, draw_leaderboard, get_player_name, MAX_LEADERBOARD_SIZE
+from leaderboard.leaderboard import (
+    load_leaderboard,
+    save_leaderboard,
+    update_leaderboard,
+    draw_leaderboard,
+    get_player_name,
+    MAX_LEADERBOARD_SIZE,
+)
 
 # Initialize Pygame
 pygame.init()
@@ -23,16 +30,20 @@ YELLOW = (255, 255, 0)
 CYAN = (0, 255, 255)
 
 # Load the space-themed font
-title_font_path = 'assets/fonts/Orbitron/static/Orbitron-Bold.ttf'  # Adjust the path as needed
-menu_font_path = 'assets/fonts/Orbitron/static/Orbitron-Regular.ttf'   # Can be the same or different
+title_font_path = (
+    "assets/fonts/Orbitron/static/Orbitron-Bold.ttf"  # Adjust the path as needed
+)
+menu_font_path = (
+    "assets/fonts/Orbitron/static/Orbitron-Regular.ttf"  # Can be the same or different
+)
 
 # Set up fonts
 font = pygame.font.Font(menu_font_path, 36)
 hud_font = pygame.font.Font(menu_font_path, 28)
 big_font = pygame.font.Font(menu_font_path, 72)
 
-navigate_sound = pygame.mixer.Sound('assets/sounds/click.wav')
-select_sound = pygame.mixer.Sound('assets/sounds/select.wav')
+navigate_sound = pygame.mixer.Sound("assets/sounds/click.wav")
+select_sound = pygame.mixer.Sound("assets/sounds/select.wav")
 
 # Load images (ensure correct path)
 spaceship_image = pygame.image.load("assets/images/spaceship.png")
@@ -55,33 +66,38 @@ bomb_image = pygame.transform.scale(bomb_image, (30, 30))
 # Game state variables
 game_active = False
 tutorial_active = False
-difficulty = 'medium'  # Default difficulty level
+difficulty = "medium"  # Default difficulty level
 difficulty_selected = 1  # Default is medium
-difficulty_levels = ['easy', 'medium', 'hard']  # Difficulty options
+difficulty_levels = ["easy", "medium", "hard"]  # Difficulty options
+
 
 # Function to display difficulty selection
 def display_difficulty_selection(screen, selected_index):
     screen.fill(BLACK)
     title_text = big_font.render("Select Difficulty", True, WHITE)
     screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
-    
+
     for i, level in enumerate(difficulty_levels):
         color = GREEN if i == selected_index else WHITE
         option_text = font.render(level.capitalize(), True, color)
-        screen.blit(option_text, (SCREEN_WIDTH // 2 - option_text.get_width() // 2, 200 + i * 50))
-    
+        screen.blit(
+            option_text,
+            (SCREEN_WIDTH // 2 - option_text.get_width() // 2, 200 + i * 50),
+        )
+
     pygame.display.flip()
+
 
 # Function to handle difficulty selection with up/down keys
 def handle_difficulty_selection(screen):
     global difficulty_selected, difficulty
-    
+
     selected_index = difficulty_selected
     selecting = True
-    
+
     while selecting:
         display_difficulty_selection(screen, selected_index)
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -94,6 +110,7 @@ def handle_difficulty_selection(screen):
                 elif event.key == pygame.K_RETURN:
                     difficulty = difficulty_levels[selected_index]
                     selecting = False
+
 
 # Define the spaceship class
 class Spaceship(pygame.sprite.Sprite):
@@ -108,7 +125,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.rapid_fire_timer = 0
         self.shield = False  # Tracks whether the shield is active
         self.shield_timer = 0  # Timer for how long the shield lasts
-    
+
     def update(self):
         """Update spaceship position and handle power-ups."""
         keys = pygame.key.get_pressed()
@@ -127,7 +144,6 @@ class Spaceship(pygame.sprite.Sprite):
             self.rapid_fire_timer -= 1
             if self.rapid_fire_timer <= 0:
                 self.rapid_fire = False
-
 
     def activate_rapid_fire(self, duration=300):
         self.rapid_fire = True
@@ -153,6 +169,7 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0:  # If the bullet goes off the top
             self.kill()
 
+
 # Define the enemy class
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image, speed, missed_callback, player):
@@ -169,7 +186,9 @@ class Enemy(pygame.sprite.Sprite):
         """Move the enemy down the screen unless the shield is active."""
         if not self.player.shield:  # Check if the player's shield is active
             self.rect.y += self.speed  # Move enemy downward only if shield is inactive
-        if self.rect.top > SCREEN_HEIGHT:  # Check if the enemy has crossed the bottom of the screen
+        if (
+            self.rect.top > SCREEN_HEIGHT
+        ):  # Check if the enemy has crossed the bottom of the screen
             self.kill()  # Remove enemy from the screen
             print(f"Alien missed!")  # Debugging message for missed aliens
             self.missed_callback()  # Call the callback to increment missed aliens
@@ -178,21 +197,26 @@ class Enemy(pygame.sprite.Sprite):
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, powerup_type, image):
         super().__init__()
-        self.powerup_type = powerup_type  # Type of power-up (e.g., 'rapid_fire', 'shield', 'bomb')
+        self.powerup_type = (
+            powerup_type  # Type of power-up (e.g., 'rapid_fire', 'shield', 'bomb')
+        )
         self.image = image  # Power-up image
         self.rect = self.image.get_rect()
-        self.rect.x = random.randint(0, SCREEN_WIDTH - self.rect.width)  # Random x-position
+        self.rect.x = random.randint(
+            0, SCREEN_WIDTH - self.rect.width
+        )  # Random x-position
         self.rect.y = random.randint(-100, -40)  # Start slightly off-screen
         self.speed = 2  # Falling speed of the power-up
 
     def update(self):
         """
-        Update the position of the power-up. 
+        Update the position of the power-up.
         If it falls below the bottom of the screen, remove it.
         """
         self.rect.y += self.speed  # Move the power-up downward
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()  # Remove the power-up if it goes off-screen
+
 
 # Define the explosion effect when an alien is hit
 class Explosion(pygame.sprite.Sprite):
@@ -203,17 +227,18 @@ class Explosion(pygame.sprite.Sprite):
         self.rect.centerx = x
         self.rect.centery = y
         self.lifetime = 15  # Explosion will last for 15 frames (0.25 seconds)
-    
+
     def update(self):
         self.lifetime -= 1
         if self.lifetime <= 0:
             self.kill()
 
+
 class Game:
     def __init__(self, screen):
         self.screen = screen
         self.reset_game()
-        self.player_name = "" # Initialize player_name as an empty string
+        self.player_name = ""  # Initialize player_name as an empty string
         self.hud_font = pygame.font.Font(menu_font_path, 28)
 
     def reset_game(self):
@@ -255,17 +280,20 @@ class Game:
         # If the player has a score, check if it's a high score
         if self.score > 0:
             leaderboard = load_leaderboard()
-            
+
             # Check if the leaderboard has less than 5 entries, or the score is higher than the lowest score
-            if len(leaderboard) < MAX_LEADERBOARD_SIZE or self.score > leaderboard[-1]['score']:
+            if (
+                len(leaderboard) < MAX_LEADERBOARD_SIZE
+                or self.score > leaderboard[-1]["score"]
+            ):
                 # Player qualifies for a high score, prompt for name
-                self.player_name = get_player_name(self.screen, pygame.font.Font(None, 36))  # Set player_name
+                self.player_name = get_player_name(
+                    self.screen, pygame.font.Font(None, 36)
+                )  # Set player_name
                 update_leaderboard(self.player_name, self.score)
-        
+
         # Show the game over screen with the leaderboard
         self.show_game_over_screen()
-
-
 
     def increment_missed_aliens(self):
         """Increments the missed aliens counter and checks if game over."""
@@ -289,7 +317,9 @@ class Game:
         self.level_duration_multiplier -= 0.05  # Levels get shorter by 5%
 
         # Adjust level duration by multiplier, ensure it doesn't go below a minimum threshold
-        self.level_duration = max(int(15000 * self.level_duration_multiplier), 5000)  # Min duration of 5 seconds
+        self.level_duration = max(
+            int(15000 * self.level_duration_multiplier), 5000
+        )  # Min duration of 5 seconds
 
         # Reset the level start time
         self.level_start_time = pygame.time.get_ticks()
@@ -307,7 +337,11 @@ class Game:
                 # Fire bullets when spacebar is pressed
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     if self.game_active:  # Only fire bullets when the game is active
-                        bullet = Bullet(self.player.rect.centerx, self.player.rect.top, self.bullet_image)
+                        bullet = Bullet(
+                            self.player.rect.centerx,
+                            self.player.rect.top,
+                            self.bullet_image,
+                        )
                         self.bullets.add(bullet)
                         self.all_sprites.add(bullet)
 
@@ -352,30 +386,37 @@ class Game:
 
     def spawn_enemy(self):
         """Spawns enemies at a random location with increasing speed as the level goes up."""
-        if random.random() < self.enemy_spawn_rate + (self.level * 0.005):  # Adjust enemy spawn rate as the level increases
-            enemy_speed = (1 + (self.level * 0.2)) * self.enemy_speed_multiplier  # Enemies get faster each level
-            enemy = Enemy(self.enemy_image, enemy_speed, self.increment_missed_aliens, self.player)  # Pass player to enemy
+        if random.random() < self.enemy_spawn_rate + (
+            self.level * 0.005
+        ):  # Adjust enemy spawn rate as the level increases
+            enemy_speed = (
+                1 + (self.level * 0.2)
+            ) * self.enemy_speed_multiplier  # Enemies get faster each level
+            enemy = Enemy(
+                self.enemy_image, enemy_speed, self.increment_missed_aliens, self.player
+            )  # Pass player to enemy
             self.all_sprites.add(enemy)
             self.enemies.add(enemy)
-
 
     def spawn_powerup(self):
         """Spawns powerups randomly."""
         if random.random() < 0.005:
-            powerup_type = random.choice(['rapid_fire', 'shield', 'bomb'])
-            powerup = PowerUp(powerup_type, getattr(self, f'{powerup_type}_image'))
+            powerup_type = random.choice(["rapid_fire", "shield", "bomb"])
+            powerup = PowerUp(powerup_type, getattr(self, f"{powerup_type}_image"))
             self.all_sprites.add(powerup)
             self.powerups.add(powerup)
 
     def check_powerup_collisions(self):
         """Handles the logic for power-up collisions."""
-        powerup_collisions = pygame.sprite.spritecollide(self.player, self.powerups, True)
+        powerup_collisions = pygame.sprite.spritecollide(
+            self.player, self.powerups, True
+        )
         for powerup in powerup_collisions:
-            if powerup.powerup_type == 'rapid_fire':
+            if powerup.powerup_type == "rapid_fire":
                 self.player.activate_rapid_fire()
-            elif powerup.powerup_type == 'shield':
+            elif powerup.powerup_type == "shield":
                 self.player.activate_shield()
-            elif powerup.powerup_type == 'bomb':
+            elif powerup.powerup_type == "bomb":
                 enemies_on_screen = len(self.enemies)
                 for enemy in self.enemies:
                     explosion = Explosion(enemy.rect.centerx, enemy.rect.centery)
@@ -385,16 +426,22 @@ class Game:
 
     def draw_hud(self):
         """Draws the heads-up display (HUD) when the game is active."""
-        pygame.draw.rect(self.screen, (0, 0, 255), (0, 0, SCREEN_WIDTH, 50))  # Blue background
+        pygame.draw.rect(
+            self.screen, (0, 0, 255), (0, 0, SCREEN_WIDTH, 50)
+        )  # Blue background
 
         # Display level, missed aliens, time left, and score
         level_text = self.hud_font.render(f"Level: {self.level}", True, (0, 255, 255))
         self.screen.blit(level_text, (10, 10))
 
-        missed_text = self.hud_font.render(f"Missed: {self.missed_aliens}/{self.max_missed_aliens}", True, (255, 0, 0))
+        missed_text = self.hud_font.render(
+            f"Missed: {self.missed_aliens}/{self.max_missed_aliens}", True, (255, 0, 0)
+        )
         self.screen.blit(missed_text, (200, 10))
 
-        time_left = (self.level_duration - (pygame.time.get_ticks() - self.level_start_time)) // 1000
+        time_left = (
+            self.level_duration - (pygame.time.get_ticks() - self.level_start_time)
+        ) // 1000
         timer_text = self.hud_font.render(f"Time: {time_left}s", True, (255, 255, 255))
         self.screen.blit(timer_text, (400, 10))
 
@@ -404,9 +451,13 @@ class Game:
         # Active power-up indicators (e.g., shield, rapid-fire)
         powerups_active_icons = []
         if self.player.shield:  # Show shield indicator
-            powerups_active_icons.append((shield_image, self.player.shield_timer // 60))  # 60 FPS -> seconds
+            powerups_active_icons.append(
+                (shield_image, self.player.shield_timer // 60)
+            )  # 60 FPS -> seconds
         if self.player.rapid_fire:  # Show rapid-fire indicator
-            powerups_active_icons.append((rapid_fire_image, self.player.rapid_fire_timer // 60))
+            powerups_active_icons.append(
+                (rapid_fire_image, self.player.rapid_fire_timer // 60)
+            )
 
         # Draw the power-up indicators
         for i, (icon, timer) in enumerate(powerups_active_icons):
@@ -416,21 +467,34 @@ class Game:
 
         pygame.display.flip()
 
-
     def show_game_over_screen(self):
         """Displays the game-over screen and the leaderboard."""
         self.screen.fill((0, 0, 0))  # Black background
         font = pygame.font.Font(None, 64)
 
         game_over_text = font.render("Game Over", True, (255, 0, 0))  # Red text
-        self.screen.blit(game_over_text, (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, 50))
+        self.screen.blit(
+            game_over_text, (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, 50)
+        )
 
         # Display the leaderboard, highlight the player's score
-        draw_leaderboard(self.screen, pygame.font.Font(menu_font_path, 36), self.player_name, self.score)
+        draw_leaderboard(
+            self.screen,
+            pygame.font.Font(menu_font_path, 36),
+            self.player_name,
+            self.score,
+        )
 
-        your_score = font.render("Your score: " + str(self.score), True, (255, 255, 255))
-        restart_text = font.render("Press R to Restart or Q to Quit", True, (255, 255, 255))  # White text
-        self.screen.blit(restart_text, (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, SCREEN_HEIGHT - 100))
+        your_score = font.render(
+            "Your score: " + str(self.score), True, (255, 255, 255)
+        )
+        restart_text = font.render(
+            "Press R to Restart or Q to Quit", True, (255, 255, 255)
+        )  # White text
+        self.screen.blit(
+            restart_text,
+            (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, SCREEN_HEIGHT - 100),
+        )
 
         pygame.display.flip()
 
@@ -449,24 +513,23 @@ class Game:
                         exit()
 
 
-
-
 def set_difficulty(level, game):
     """
     Sets the difficulty of the game by adjusting key parameters
     like screen width, max missed aliens, and level duration.
     """
     global SCREEN_WIDTH
-    if level == 'easy':
+    if level == "easy":
         game.max_missed_aliens = 15
         game.level_duration = 20000  # Easier level lasts longer
         SCREEN_WIDTH = 800
-    elif level == 'medium':
+    elif level == "medium":
         game.max_missed_aliens = 10
         game.level_duration = 15000  # Default level duration
         SCREEN_WIDTH = 900
-    elif level == 'hard':
+    elif level == "hard":
         game.max_missed_ali
+
 
 def start_screen(screen):
     """Displays the animated start screen."""
@@ -487,18 +550,24 @@ def start_screen(screen):
         screen.fill(BLACK)
 
         # Animate the title text (pulsing effect)
-        pulse = (math.sin(pygame.time.get_ticks() * 0.005) + 1) / 2  # Value between 0 and 1
+        pulse = (
+            math.sin(pygame.time.get_ticks() * 0.005) + 1
+        ) / 2  # Value between 0 and 1
         animated_title_size = int(title_font_size + 10 * pulse)
         animated_title_font = pygame.font.Font(title_font_path, animated_title_size)
         title_surface = animated_title_font.render(title_text, True, WHITE)
-        title_rect = title_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
+        title_rect = title_surface.get_rect(
+            center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4)
+        )
         screen.blit(title_surface, title_rect)
 
         # Draw the menu options
         for i, option in enumerate(menu_options):
             color = YELLOW if i == selected_option else WHITE
             option_surface = menu_font.render(option, True, color)
-            option_rect = option_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * 60))
+            option_rect = option_surface.get_rect(
+                center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * 60)
+            )
             screen.blit(option_surface, option_rect)
 
         # Event handling
@@ -549,6 +618,6 @@ def main():
     if game_active:
         game.run()
 
-if __name__ == '__main__':
-    main()
 
+if __name__ == "__main__":
+    main()

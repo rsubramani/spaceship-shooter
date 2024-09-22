@@ -3,6 +3,7 @@ from pygame.tests import test_utils
 import unittest
 from spaceship import Game, Spaceship, Enemy
 
+
 class TestGameWithPygameTests(unittest.TestCase):
 
     def setUp(self):
@@ -53,11 +54,15 @@ class TestGameWithPygameTests(unittest.TestCase):
         # Mock Pygame key press events for left arrow and right arrow
         test_utils.press_key(pygame.K_LEFT)
         self.game.player.update()  # Update player based on key press
-        self.assertLess(self.game.player.rect.centerx, 400)  # Ensure the player moved left
+        self.assertLess(
+            self.game.player.rect.centerx, 400
+        )  # Ensure the player moved left
 
         test_utils.press_key(pygame.K_RIGHT)
         self.game.player.update()  # Update player based on key press
-        self.assertGreater(self.game.player.rect.centerx, 400)  # Ensure the player moved right
+        self.assertGreater(
+            self.game.player.rect.centerx, 400
+        )  # Ensure the player moved right
 
     def test_power_up_activation(self):
         """Test that the shield power-up is activated when collected."""
@@ -67,7 +72,9 @@ class TestGameWithPygameTests(unittest.TestCase):
 
     def test_game_over_condition(self):
         """Test that the game ends when missed aliens exceed the limit."""
-        self.game.missed_aliens = self.game.max_missed_aliens - 1  # Set to one less than max
+        self.game.missed_aliens = (
+            self.game.max_missed_aliens - 1
+        )  # Set to one less than max
         self.game.run()  # Run the game loop
 
         # Assert that the game has not ended yet
@@ -79,6 +86,7 @@ class TestGameWithPygameTests(unittest.TestCase):
 
         # Assert that the game is now over
         self.assertEqual(self.game.missed_aliens, self.game.max_missed_aliens)
+
 
 if __name__ == "__main__":
     unittest.main()
