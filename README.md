@@ -68,8 +68,3 @@ Feel free to submit issues or pull requests if you want to contribute to this pr
 ## License
 This project is licensed under the MIT License.
 Feel free to submit issues or pull requests if you want to contribute to this project. We welcome feedback and new ideas to improve the game!
-
----
-
-## License
-This project is licensed under the MIT License.
