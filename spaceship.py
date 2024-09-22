@@ -70,6 +70,22 @@ difficulty = "medium"  # Default difficulty level
 difficulty_selected = 1  # Default is medium
 difficulty_levels = ["easy", "medium", "hard"]  # Difficulty options
 
+tutorial_content = {
+    "Controls": [
+        "Move left: Arrow Left",
+        "Move right: Arrow Right",
+        "Fire bullets: Spacebar"
+    ],
+    "Gameplay Tips": [
+        "Avoid missing too many aliens!",
+        "Use power-ups to boost your abilities:",
+        "Shield, Lightning, Bomb"
+    ],
+    "Navigation": [
+        "Press B to go back to the menu.",
+        "ENTER to start the game."
+    ]
+}
 
 # Function to display difficulty selection
 def display_difficulty_selection(screen, selected_index):
@@ -542,7 +558,7 @@ def start_screen(screen):
     menu_font = pygame.font.Font(menu_font_path, menu_font_size)
 
     title_text = "Space Shooter"
-    menu_options = ["Start Game", "Settings", "Exit"]
+    menu_options = ["Start Game", "Settings", "Tutorial", "Exit"]
     selected_option = 0  # Index of the currently selected option
 
     running = True
@@ -564,7 +580,7 @@ def start_screen(screen):
         # Draw the menu options
         for i, option in enumerate(menu_options):
             color = YELLOW if i == selected_option else WHITE
-            option_surface = menu_font.render(option, True, color)
+            option_surface = hud_font.render(option, True, color)
             option_rect = option_surface.get_rect(
                 center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * 60)
             )
@@ -586,6 +602,8 @@ def start_screen(screen):
                     select_sound.play()
                     if menu_options[selected_option] == "Start Game":
                         running = False  # Proceed to the game
+                    elif menu_options[selected_option] == "Tutorial":
+                        show_tutorial(screen)  # Show the tutorial
                     elif menu_options[selected_option] == "Settings":
                         # You can implement the settings screen if needed
                         pass
@@ -596,6 +614,44 @@ def start_screen(screen):
         pygame.display.flip()
         clock.tick(60)
 
+
+# Function to display tutorial
+def show_tutorial(screen):
+    """Displays the tutorial with plain text instructions on how to play."""
+    clock = pygame.time.Clock()
+
+    running = True
+    while running:
+        screen.fill(BLACK)
+        
+        y_offset = 100  # Starting Y position for text
+        for heading, lines in tutorial_content.items():
+            # Render heading
+            heading_surface = hud_font.render(heading, True, YELLOW)
+            screen.blit(heading_surface, (50, y_offset))
+            y_offset += 40  # Add some space after heading
+            
+            # Render each line of text under the heading
+            for line in lines:
+                text_surface = hud_font.render(line, True, WHITE)
+                screen.blit(text_surface, (50, y_offset))
+                y_offset += 30  # Add space between lines
+            
+            y_offset += 20  # Add extra space after each section
+        
+        # Event handling for the tutorial
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_b:
+                    return  # Go back to the main menu
+                elif event.key == pygame.K_RETURN:
+                    running = False  # Start the game
+
+        pygame.display.flip()
+        clock.tick(60)
 
 # Main entry point
 def main():
