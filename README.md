@@ -38,8 +38,6 @@ Once the dependencies are installed, activate the virtual environment:
 pipenv shell
 ```
 
----
-
 ## Running the Game
 Once you've set up everything, you can run the game by executing the following command in the virtual environment:
 ```bash
@@ -47,20 +45,16 @@ python spaceship.py
 ```
 The game will launch in a new window. Use the keyboard to control your spaceship and start shooting those aliens!
 
----
-
 ## Controls
 - Arrow keys: Move the spaceship left and right.
 - Spacebar: Fire bullets.
 - R: Restart the game after Game Over.
 - Q: Quit the game.
 
----
 
 ## Leaderboard
 At the end of each game, if your score qualifies for the top 5, you'll be prompted to enter your name. Your score will then be saved to the leaderboard, which is displayed at the end of each game.
 
----
 
 ## Power-ups
 Shield: Protects your spaceship from missing aliens for a limited time.
@@ -68,19 +62,11 @@ Bomb: Destroys all aliens on the screen
 
 ---
 
-## Future Ideas
-
-1. Power-Ups
-	- Triple Shot
-	- Spread Shot
-2. Increase speed of rocket
-3. Explosion on kill
-4. Different aliens
-5. Hard, medium, easy modes
-
----
-
 ## Contributing
+Feel free to submit issues or pull requests if you want to contribute to this project. We welcome feedback and new ideas to improve the game!
+
+## License
+This project is licensed under the MIT License.
 Feel free to submit issues or pull requests if you want to contribute to this project. We welcome feedback and new ideas to improve the game!
 
 ---
