@@ -21,7 +21,7 @@ Ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/spaceship-shooter.git
+git clone https://github.com/rsubramani/spaceship-shooter.git
 cd spaceship-shooter
 ```
 
